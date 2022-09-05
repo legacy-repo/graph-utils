@@ -19,6 +19,7 @@ from builder.databases.parsers.gwas_catalog_parser import GWASCatalogParser
 from builder.databases.parsers.dgi_db_parser import DGIdbParser
 from builder.databases.parsers.sider_parser import SIDERParser
 from builder.databases.parsers.psp_parser import PhosphoSitePlusParser
+from builder.databases.parsers.signor_parser import SIGNORParser
 
 
 parsers = {
@@ -45,5 +46,6 @@ parsers = {
     "GWASCatalog": GWASCatalogParser,
     "DGIdb": DGIdbParser,
     "SIDER": SIDERParser,
-    "PhosphoSitePlus": PhosphoSitePlusParser
+    "PhosphoSitePlus": PhosphoSitePlusParser,
+    "SIGNOR": SIGNORParser
 }
