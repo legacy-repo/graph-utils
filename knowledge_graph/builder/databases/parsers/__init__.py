@@ -9,6 +9,7 @@ from builder.databases.parsers.pathway_commons_parser import PathwayCommonsParse
 from builder.databases.parsers.oncokb_parser import OncoKBParser
 from builder.databases.parsers.pfam_parser import PfamParser
 from builder.databases.parsers.refseq_parser import RefSeqParser
+from builder.databases.parsers.disgenet_parser import DisGEnetParser
 
 
 parsers = {
@@ -25,5 +26,6 @@ parsers = {
     "PathwayCommons": PathwayCommonsParser,
     "OncoKB": OncoKBParser,
     "Pfam": PfamParser,
-    "RefSeq": RefSeqParser
+    "RefSeq": RefSeqParser,
+    "DisGEnet": DisGEnetParser
 }
