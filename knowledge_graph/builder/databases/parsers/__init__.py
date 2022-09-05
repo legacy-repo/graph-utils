@@ -10,6 +10,7 @@ from builder.databases.parsers.oncokb_parser import OncoKBParser
 from builder.databases.parsers.pfam_parser import PfamParser
 from builder.databases.parsers.refseq_parser import RefSeqParser
 from builder.databases.parsers.disgenet_parser import DisGEnetParser
+from builder.databases.parsers.stitch_parser import STITCHParser
 
 
 parsers = {
@@ -27,5 +28,6 @@ parsers = {
     "OncoKB": OncoKBParser,
     "Pfam": PfamParser,
     "RefSeq": RefSeqParser,
-    "DisGEnet": DisGEnetParser
+    "DisGEnet": DisGEnetParser,
+    "STITCH": STITCHParser
 }
