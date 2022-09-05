@@ -11,6 +11,7 @@ from builder.databases.parsers.pfam_parser import PfamParser
 from builder.databases.parsers.refseq_parser import RefSeqParser
 from builder.databases.parsers.disgenet_parser import DisGEnetParser
 from builder.databases.parsers.stitch_parser import STITCHParser
+from builder.databases.parsers.string_parser import STRINGParser
 
 
 parsers = {
@@ -29,5 +30,6 @@ parsers = {
     "Pfam": PfamParser,
     "RefSeq": RefSeqParser,
     "DisGEnet": DisGEnetParser,
-    "STITCH": STITCHParser
+    "STITCH": STITCHParser,
+    "STRING": STRINGParser
 }
