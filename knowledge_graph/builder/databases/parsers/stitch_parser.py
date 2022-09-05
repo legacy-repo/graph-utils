@@ -137,12 +137,11 @@ class STITCHParser(BaseParser):
         """
         url = self.config['STITCH_mapping_url']
         mapping = defaultdict(set)
-        directory = os.path.join(
-            self.config["database_directory"], self.database_name)
+        directory = os.path.join(self.database_directory, self.database_name)
         file_name = os.path.join(directory, url.split('/')[-1])
         self.check_directory(directory)
         if self.download:
-            logger.info("Downloading", url, directory)
+            logger.info("Downloading %s to %s" % (url, directory))
             self.download_db(url, directory)
 
         f = os.path.join(directory, file_name)
