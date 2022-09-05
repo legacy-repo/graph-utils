@@ -1,11 +1,13 @@
 # RefSeq
 import os.path
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class RefSeqParser(BaseParser):
@@ -101,5 +103,5 @@ class RefSeqParser(BaseParser):
                 self.database_name, rel, len(relationships[rel])))
             stats.add(self._build_stats(len(relationships[rel]), "relationships",
                                         rel, self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

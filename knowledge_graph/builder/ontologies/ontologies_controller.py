@@ -1,8 +1,6 @@
 import os
 import sys
-import json
 import logging
-import logging.config as log_config
 import re
 import click
 import os.path
@@ -16,6 +14,7 @@ import wget
 import requests
 import datetime
 import coloredlogs
+import verboselogs
 from collections import defaultdict
 from builder.ontologies.parsers import snomedParser
 from builder.ontologies.parsers import icdParser
@@ -23,14 +22,10 @@ from builder.ontologies.parsers import oboParser
 from builder.ontologies.parsers import reflectParser
 from builder.ontologies.parsers import efoParser
 
-config_dir = os.path.dirname(os.path.abspath(builder.__file__))
 
-# print(sys.path)
-# with open(os.path.join(config_dir, "log.config")) as f:
-#     config = json.load(f)
-#     log_config.dictConfig(config)
-coloredlogs.install(fmt='%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+verboselogs.install()
+coloredlogs.install(fmt='%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
+logger = logging.getLogger('root')
 
 
 class Ontology:

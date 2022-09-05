@@ -1,23 +1,16 @@
 import os
-import json
 import logging
 import coloredlogs
-import logging.config as log_config
+import verboselogs
 import click
-import builder
 from builder.databases import config as config_mod
 from builder.databases.parsers import parsers
 from joblib import Parallel, delayed
 
-config_dir = os.path.dirname(os.path.abspath(builder.__file__))
 
-# print(sys.path)
-# with open(os.path.join(config_dir, "log.config")) as f:
-#     config = json.load(f)
-#     log_config.dictConfig(config)
-
-coloredlogs.install(reconfigure=True)
-logger = logging.getLogger(__name__)
+verboselogs.install()
+coloredlogs.install(fmt='%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
+logger = logging.getLogger('root')
 
 
 @click.group()
@@ -25,12 +18,12 @@ def database():
     pass
 
 
-def parse_database(import_directory, database_directory, database, 
-                   config_file=None, download=True, skip=True):
+def _parse_database(import_directory, database_directory, database,
+                    config_file=None, download=True, skip=True):
     stats = set()
     Parser = parsers.get(database, None)
     if Parser:
-        parser = Parser(import_directory, database_directory, 
+        parser = Parser(import_directory, database_directory,
                         config_file=config_file, download=download, skip=skip)
         stats = parser.build_stats()
     return stats
@@ -58,7 +51,8 @@ class NotSupportedAction(Exception):
 @click.option('--skip/--no-skip', default=True, help="Whether skip the existing file(s)?")
 def parse_database(output_dir, db_dir, database, config, download, n_jobs, skip):
     if config and len(database) > 1:
-        raise NotSupportedAction("Cannot support a single config file with several databases.")
+        raise NotSupportedAction(
+            "Cannot support a single config file with several databases.")
 
     all_databases = database
     valid_databases = list(
@@ -68,12 +62,16 @@ def parse_database(output_dir, db_dir, database, config, download, n_jobs, skip)
     if len(invalid_databases) > 0:
         logger.warn("%s databases (%s) is not valid, skip them.",
                     len(invalid_databases), invalid_databases)
-    stats = Parallel(n_jobs=n_jobs)(delayed(parse_database)(
-        output_dir, db_dir, database, config, download, skip) for database in valid_databases)
-    allstats = {val if type(sublist) == set else sublist 
+    logger.info("Run jobs with (output_dir: %s, db_dir: %s, databases: %s, config: %s, download: %s, skip: %s)" %
+                (output_dir, db_dir, all_databases, config, download, skip))
+    stats = Parallel(n_jobs=n_jobs)(delayed(_parse_database)(output_dir, db_dir, db,
+                                                             config_file=config, download=download, skip=skip)
+                                    for db in valid_databases)
+    allstats = {val if type(sublist) == set else sublist
                 for sublist in stats for val in sublist}
     logger.info("Stats: %s" % allstats)
     return allstats
+
 
 @database.command(help="Print the default config file.")
 @click.option('--database', required=True, type=click.Choice(parsers.keys()),
@@ -83,7 +81,7 @@ def print_config(database):
     config_file = os.path.join(config_dir, "%s.yml" % database)
     with open(config_file, 'r') as f:
         print(f.read())
-    
+
 
 if __name__ == "__main__":
     main = click.CommandCollection(sources=[database])

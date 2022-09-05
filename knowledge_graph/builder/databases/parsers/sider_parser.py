@@ -2,11 +2,13 @@ import os.path
 import gzip
 import re
 import logging
+import verboselogs
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 from builder.databases.parsers.stitch_parser import STITCHParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class SIDERParser(BaseParser):
@@ -100,6 +102,6 @@ class SIDERParser(BaseParser):
                                                                           "indicated_for", len(relationships)))
         stats.add(self._build_stats(len(relationships), "relationships", "indicated_for", 
                                            self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats
             

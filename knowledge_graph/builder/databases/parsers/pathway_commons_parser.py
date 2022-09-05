@@ -2,10 +2,12 @@
 import gzip
 import os.path
 import logging
+import verboselogs
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class PathwayCommonsParser(BaseParser):
@@ -71,5 +73,5 @@ class PathwayCommonsParser(BaseParser):
             self.database_name, "protein_associated_with_pathway", len(relationships)))
         stats.add(self._build_stats(len(relationships), "relationships",
                   "protein_associated_with_pathway", self.database_name, pathway_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

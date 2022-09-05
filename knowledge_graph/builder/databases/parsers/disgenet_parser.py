@@ -1,11 +1,13 @@
 import os.path
 import logging
+import verboselogs
 import gzip
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class DisGEnetParser(BaseParser):
@@ -121,5 +123,5 @@ class DisGEnetParser(BaseParser):
                 self.database_name, idType, len(relationships[idType])))
             stats.add(self._build_stats(len(relationships[idType]), "relationships", idType,
                                         self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

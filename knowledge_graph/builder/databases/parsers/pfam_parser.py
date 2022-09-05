@@ -2,11 +2,13 @@
 import os.path
 import pandas as pd
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class PfamParser(BaseParser):
@@ -20,7 +22,7 @@ class PfamParser(BaseParser):
 
     def parse(self):
         entity_header = self.config['entity_header']
-        relationship_headers = config['relationship_headers']
+        relationship_headers = self.config['relationship_headers']
 
         directory = os.path.join(self.database_directory, 'Pfam')
         self.check_directory(directory)
@@ -32,7 +34,7 @@ class PfamParser(BaseParser):
         # url = config['test']
 
         if self.download:
-            self.builder_utils.download_db(ftp_url+filename, directory)
+            self.download_db(ftp_url+filename, directory)
 
         stats = set()
         if os.path.exists(os.path.join(directory, filename)):
@@ -158,5 +160,5 @@ class PfamParser(BaseParser):
 
     def build_stats(self):
         stats = self.parse()
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

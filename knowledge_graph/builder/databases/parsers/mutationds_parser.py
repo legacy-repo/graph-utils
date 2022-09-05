@@ -1,10 +1,12 @@
 import re
 import os.path
 import logging
+import verboselogs
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class MutationDsParser(BaseParser):
@@ -63,5 +65,5 @@ class MutationDsParser(BaseParser):
                                                                           "curated_affects_interaction_with", len(relationships)))
         stats.add(self._build_stats(len(relationships), "relationships", "curated_affects_interaction_with",
                                     self.database_name, outputfile, self.updated_on))
-        print("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

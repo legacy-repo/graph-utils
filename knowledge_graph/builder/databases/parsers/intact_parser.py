@@ -1,11 +1,13 @@
 import re
 import os.path
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class IntActParser(BaseParser):
@@ -89,7 +91,7 @@ class IntActParser(BaseParser):
         logger.info("Database {} - Number of {} relationships: {}".format(self.database_name, "curated_interacts_with", len(relationships)))
         stats.add(self._build_stats(len(relationships), "relationships", "curated_interacts_with", 
                                     self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats
     
     def is_number(self, s):

@@ -3,11 +3,13 @@ import os.path
 import tarfile
 import pandas as pd
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class FooDBParser(BaseParser):
@@ -88,7 +90,7 @@ class FooDBParser(BaseParser):
                 self.database_name, relationship, len(relationships[(entity, relationship)])))
             stats.add(self._build_stats(len(relationships[(entity, relationship)]),
                                         "relationships", relationship, self.database_name, foodb_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats
 
     def parse_contents(self, fhandler):
@@ -114,7 +116,7 @@ class FooDBParser(BaseParser):
         food = set()
         mapping = defaultdict(set)
         df = pd.read_csv(fhandler, sep=',', header=None,
-                         error_bad_lines=False, low_memory=False, encoding="utf-8")
+                         low_memory=False, encoding="utf-8")
         first = True
         for index, row in df.iterrows():
             if first:
@@ -137,7 +139,7 @@ class FooDBParser(BaseParser):
         compounds = {}
         first = True
         df = pd.read_csv(fhandler, sep=',', header=None,
-                         error_bad_lines=False, low_memory=False, encoding="utf-8")
+                         low_memory=False, encoding="utf-8")
         first = True
         for index, row in df.iterrows():
             if first:

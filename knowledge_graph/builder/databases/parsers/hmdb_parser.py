@@ -2,12 +2,14 @@
 import os.path
 import logging
 import zipfile
+import verboselogs
 from collections import defaultdict
 from lxml import etree
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class HMDBParser(BaseParser):
@@ -55,7 +57,7 @@ class HMDBParser(BaseParser):
                 self.database_name, relationship, len(relationships[relationship])))
             stats.add(self._build_stats(len(relationships[relationship]), "relationships",
                       relationship, self.database_name, hmdb_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats
 
     def extract_metabolites(self, directory):

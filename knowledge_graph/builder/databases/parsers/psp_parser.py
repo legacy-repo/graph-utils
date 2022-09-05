@@ -1,12 +1,14 @@
 import os.path
 import gzip
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 from builder.databases.parsers.stitch_parser import STITCHParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class NoSuchFiles(Exception):
@@ -203,5 +205,5 @@ class PhosphoSitePlusParser(BaseParser):
                                                                               len(relationships[(entity, relationship)])))
             stats.add(self._build_stats(len(relationships[(entity, relationship)]),
                                         "relationships", relationship, self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

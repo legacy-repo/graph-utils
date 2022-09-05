@@ -4,11 +4,13 @@ import pandas as pd
 import os.path
 import zipfile
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class ExposomeExplorerParser(BaseParser):
@@ -48,7 +50,7 @@ class ExposomeExplorerParser(BaseParser):
         first = True
         with fhandler.open(file_name) as f:
             df = pd.read_csv(f, sep=',', header=None,
-                             error_bad_lines=False, low_memory=False)
+                             low_memory=False)
             first = True
             for index, row in df.iterrows():
                 if first:
@@ -66,7 +68,7 @@ class ExposomeExplorerParser(BaseParser):
         first = True
         with fhandler.open(file_name) as f:
             df = pd.read_csv(f, sep=',', header=None,
-                             error_bad_lines=False, low_memory=False)
+                             low_memory=False)
             first = True
             for index, row in df.iterrows():
                 if first:
@@ -108,5 +110,5 @@ class ExposomeExplorerParser(BaseParser):
                                                                               len(relationships[(entity, relationship)])))
             stats.add(self._build_stats(len(relationships[(entity, relationship)]), "relationships",
                                         relationship, self.database_name, ee_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

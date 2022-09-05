@@ -1,12 +1,14 @@
 import zipfile
 import re
 import logging
+import verboselogs
 from os import path as os_path
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class CancerGenomeInterpreterParser(BaseParser):
@@ -138,5 +140,5 @@ class CancerGenomeInterpreterParser(BaseParser):
                 self.database_name, relationship, len(relationships[relationship])))
             stats.add(self._build_stats(len(
                 relationships[relationship]), "relationships", relationship, self.database_name, cgi_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

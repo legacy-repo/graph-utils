@@ -2,11 +2,13 @@ import os.path
 import zipfile
 import pandas as pd
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class SMPDBParser(BaseParser):
@@ -55,7 +57,7 @@ class SMPDBParser(BaseParser):
             if not os.path.isdir(filename):
                 with fhandler.open(filename) as f:
                     df = pd.read_csv(
-                        f, sep=',', error_bad_lines=False, low_memory=False)
+                        f, sep=',', low_memory=False)
                     for index, row in df.iterrows():
                         identifier = row[0]
                         name = row[2]
@@ -74,8 +76,7 @@ class SMPDBParser(BaseParser):
         for filename in fhandler.namelist():
             if not os.path.isdir(filename):
                 with fhandler.open(filename) as f:
-                    df = pd.read_csv(
-                        f, sep=',', error_bad_lines=False, low_memory=False)
+                    df = pd.read_csv(f, sep=',', low_memory=False)
                     for index, row in df.iterrows():
                         identifier = row[0]
                         protein = row[3]
@@ -94,7 +95,7 @@ class SMPDBParser(BaseParser):
             if not os.path.isdir(filename):
                 with fhandler.open(filename) as f:
                     df = pd.read_csv(
-                        f, sep=',', error_bad_lines=False, low_memory=False)
+                        f, sep=',', low_memory=False)
                     for index, row in df.iterrows():
                         identifier = row[0]
                         metabolite = row[5]
@@ -125,5 +126,5 @@ class SMPDBParser(BaseParser):
                                                                                  entity, relationship, len(relationships[(entity, relationship)])))
             stats.add(self._build_stats(len(relationships[(entity, relationship)]),
                                         "relationships", relationship, self.database_name, smpdb_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

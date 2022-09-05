@@ -2,11 +2,13 @@ import os.path
 import gzip
 import csv
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class STRINGParser(BaseParser):
@@ -122,7 +124,7 @@ class STRINGParser(BaseParser):
         # TODO: How to compute stats?
         proteinMapping, drugMapping = self.parse()
         self.parse_actions(proteinMapping, drugMapping)
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return set()
 
     def get_string_mapping(self, source="BLAST_UniProt_AC"):

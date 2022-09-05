@@ -1,12 +1,14 @@
 import os.path
 import pandas as pd
 import logging
+import verboselogs
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 from builder.databases.parsers.stitch_parser import STITCHParser
 from builder.databases.parsers.string_parser import STRINGParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class JensenLabParser(BaseParser):
@@ -48,7 +50,9 @@ class JensenLabParser(BaseParser):
 
     def parse_jensenlab(self):
         result = {}
-        string_mapping = self.get_string_mapping()
+        string_parser = STRINGParser(self.import_directory, self.database_directory,
+                                        download=self.download, skip=self.skip)
+        string_mapping = string_parser.get_string_mapping()
 
         for qtype in self.config['db_types']:
             relationships = self.parse_pairs(qtype, string_mapping)
@@ -191,7 +195,7 @@ class JensenLabParser(BaseParser):
             self.database_name, "Publication", num_entities))
         stats.add(self._build_stats(num_entities, "entity", "Publication",
                                     self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
 
         # Parse JensenLab
         result = self.parse_jensenlab()

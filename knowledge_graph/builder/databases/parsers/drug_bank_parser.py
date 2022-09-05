@@ -1,5 +1,6 @@
 import os
 import logging
+import verboselogs
 import zipfile
 from os import path as os_path
 from collections import defaultdict
@@ -7,7 +8,8 @@ from lxml import etree
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class NoSuchFile(Exception):
@@ -58,7 +60,7 @@ class DrugBankParser(BaseParser):
             stats.add(self._build_stats(len(relationships[relationship]),
                                         "relationships", relationship, self.database_name,
                                         relationship_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats
 
     def extract_drugs(self, directory):

@@ -13,9 +13,11 @@ import datetime
 import collections
 import builder
 import time
+import verboselogs
 from collections import defaultdict
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class InvalidConfigPath(Exception):
@@ -32,6 +34,7 @@ class BaseParser:
           2. Define the schema for each database?
           3. How to split all fields to two parts for building graph and attribute database respectively?
     '''
+
     def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
         config_dir = os.path.dirname(os.path.abspath(builder.__file__))
         self.builder_config = self.read_yaml(
@@ -47,7 +50,8 @@ class BaseParser:
         self.database_name = self.database_name if self.database_name else None
         # If the user pass a config file, use it instead of the default config file.
         if config_file:
-            logger.warn("CAUTION: Use the customized config file instead of the default config.")
+            logger.warn(
+                "CAUTION: Use the customized config file instead of the default config.")
             self.config_fpath = config_file
         else:
             self.config_fpath = self.config_fpath if self.config_fpath else None
@@ -130,7 +134,7 @@ class BaseParser:
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'}
 
         filepath = os.path.join(directory, file_name)
-        logger.info("Download file %s" % filepath)
+        logger.info("Download file from %s into %s" % (database_url, filepath))
         if os.path.exists(filepath):
             if self.skip:
                 logger.info("%s exists, don't need to download it." % filepath)
@@ -139,13 +143,13 @@ class BaseParser:
                 os.remove(filepath)
         try:
             if database_url.startswith('ftp:'):
-                self.download_from_ftp(
-                    database_url, user, password, directory, file_name)
+                self.download_from_ftp(database_url, user,
+                                       password, directory, file_name)
             else:
                 try:
                     if not avoid_wget:
-                        wget.download(database_url, os.path.join(
-                            directory, file_name))
+                        wget.download(database_url,
+                                      os.path.join(directory, file_name))
                     else:
                         r = requests.get(database_url, headers=header)
                         with open(os.path.join(directory, file_name), 'wb') as out:
@@ -198,7 +202,7 @@ class BaseParser:
             else:
                 shutil.rmtree(directory, ignore_errors=False, onerror=None)
         else:
-            logger.info("Done")
+            logger.success("Done")
 
     def write_entities(self, entities, header, outputfile):
         """
@@ -329,7 +333,8 @@ class BaseParser:
         mapping_file = os.path.join(dir_file, "complete_mapping.tsv")
         max_wait = 0
         while not os.path.isfile(mapping_file) and max_wait < 5000:
-            logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, ont))
+            logger.warn("No such file %s, please wait a minute or build the %s firstly." % (
+                mapping_file, ont))
             time.sleep(5)
             max_wait += 1
         try:
@@ -364,7 +369,8 @@ class BaseParser:
             while not os.path.isfile(mapping_file) and max_wait < 5000:
                 time.sleep(15)
                 max_wait += 1
-                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, source))
+                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (
+                    mapping_file, source))
             try:
                 with open(mapping_file, 'r', encoding='utf-8') as mf:
                     for line in mf:
@@ -399,7 +405,8 @@ class BaseParser:
             while not os.path.isfile(mapping_file) and max_wait < 5000:
                 time.sleep(5)
                 max_wait += 1
-                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, source))
+                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (
+                    mapping_file, source))
             try:
                 with open(mapping_file, 'r') as mf:
                     for line in mf:
@@ -413,7 +420,7 @@ class BaseParser:
                     "mapping - No mapping file {} for entity {}".format(mapping, entity))
 
         return mapping
-    
+
     def read_gzipped_file(self, filepath):
         """
         Opens an underlying process to access a gzip file through the creation of a new pipe to the child.
@@ -424,7 +431,7 @@ class BaseParser:
         handle = gzip.open(filepath, "rt")
 
         return handle
-    
+
     def list_ftp_directory(self, ftp_url, user='', password=''):
         """
         Lists all files present in folder from FTP server.
@@ -444,7 +451,8 @@ class BaseParser:
                 ftp.login(user=user, passwd=password)
                 files = ftp.nlst(ftp_dir)
         except ftplib.error_perm as err:
-            raise Exception("builder_utils - Problem listing file at {} ftp directory > {}.".format(ftp_dir, err))
+            raise Exception(
+                "builder_utils - Problem listing file at {} ftp directory > {}.".format(ftp_dir, err))
 
         return files
 
@@ -455,10 +463,10 @@ class BaseParser:
         :param file_handler file_handler: opened fasta file
         :return iterator records: iterator of sequence objects
         """
-        records = SeqIO.parse(file_handler,format="fasta")
+        records = SeqIO.parse(file_handler, format="fasta")
 
         return records
-    
+
     def batch_iterator(self, iterator, batch_size):
         """Returns lists of length batch_size.
 

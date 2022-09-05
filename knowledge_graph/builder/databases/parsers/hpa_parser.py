@@ -4,11 +4,13 @@ import pandas as pd
 import zipfile
 import os.path
 import logging
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class HPAParser(BaseParser):
@@ -49,7 +51,7 @@ class HPAParser(BaseParser):
         first = True
         with fhandler.open(file_name) as f:
             df = pd.read_csv(f, sep='\t', header=None,
-                             error_bad_lines=False, low_memory=False)
+                             low_memory=False)
             df = df.fillna(0)
             first = True
             for index, row in df.iterrows():
@@ -105,5 +107,5 @@ class HPAParser(BaseParser):
                                                                               relationship, len(relationships[(entity, relationship)])))
             stats.add(self._build_stats(len(relationships[(entity, relationship)]),
                                         "relationships", relationship, self.database_name, hpa_outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

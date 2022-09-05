@@ -1,9 +1,11 @@
 import os.path
 import logging
+import verboselogs
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class HGNCParser(BaseParser):
@@ -60,5 +62,5 @@ class HGNCParser(BaseParser):
             self.database_name, "Gene", len(entities)))
         stats.add(self._build_stats(len(entities), "entity", "Gene",
                   self.database_name, outputfile, self.updated_on))
-        logger.info("Done Parsing database {}".format(self.database_name))
+        logger.success("Done Parsing database {}".format(self.database_name))
         return stats

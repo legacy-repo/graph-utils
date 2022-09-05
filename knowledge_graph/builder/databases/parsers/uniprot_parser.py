@@ -2,11 +2,13 @@ import pandas as pd
 import re
 import logging
 import os.path
+import verboselogs
 from collections import defaultdict
 from builder.databases import config
 from builder.databases.parsers.base_parser import BaseParser
 
-logger = logging.getLogger(__name__)
+
+logger = verboselogs.VerboseLogger('root')
 
 
 class UniProtParser(BaseParser):
