@@ -25,12 +25,18 @@ class PhosphoSitePlusParser(BaseParser):
     def check_files(self, files):
         directory = os.path.join(self.database_directory, self.database_name)
         exists = True
+        not_exist_files = []
         for file in files:
             file_name = os.path.join(directory, file)
             if not os.path.exists(file_name):
-                logger.warn("Please download %s into %s manually (registration necessary to download files)." %
-                            (file, directory))
                 exists = False
+                not_exist_files.append(file)
+
+        if not exists:
+            logger.warn("Caution: registration necessary to download files")
+            logger.warn("Please download the following files from PhosphoSitePlus site into %s manually." %
+                        directory)
+            print('- ' + '\n- '.join(not_exist_files) + '\n\n')
         return exists
 
     def parse(self):

@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import coloredlogs
 import logging.config as log_config
 import click
 import builder
@@ -11,10 +12,11 @@ from joblib import Parallel, delayed
 config_dir = os.path.dirname(os.path.abspath(builder.__file__))
 
 # print(sys.path)
-with open(os.path.join(config_dir, "log.config")) as f:
-    config = json.load(f)
-    log_config.dictConfig(config)
+# with open(os.path.join(config_dir, "log.config")) as f:
+#     config = json.load(f)
+#     log_config.dictConfig(config)
 
+coloredlogs.install(reconfigure=True)
 logger = logging.getLogger(__name__)
 
 

@@ -60,3 +60,4 @@ ipykernel>=5.4.3
 eventlet==0.25.1
 itsdangerous==2.0.1
 reportlab==3.6.6
+coloredlogs==15.0.1

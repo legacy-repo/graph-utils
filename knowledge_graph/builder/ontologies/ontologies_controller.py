@@ -15,6 +15,7 @@ import ftplib
 import wget
 import requests
 import datetime
+import coloredlogs
 from collections import defaultdict
 from builder.ontologies.parsers import snomedParser
 from builder.ontologies.parsers import icdParser
@@ -25,10 +26,10 @@ from builder.ontologies.parsers import efoParser
 config_dir = os.path.dirname(os.path.abspath(builder.__file__))
 
 # print(sys.path)
-with open(os.path.join(config_dir, "log.config")) as f:
-    config = json.load(f)
-    log_config.dictConfig(config)
-
+# with open(os.path.join(config_dir, "log.config")) as f:
+#     config = json.load(f)
+#     log_config.dictConfig(config)
+coloredlogs.install(fmt='%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
