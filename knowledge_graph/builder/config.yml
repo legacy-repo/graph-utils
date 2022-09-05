@@ -1,7 +1,7 @@
 database:
   databases:
     - "DrugBank"
-    - "Jensenlab"
+    - "Jensenlab" # JensenLab and JensemLabMentions
     - "HGNC"
     - "RefSeq"
     - "UniProt"
@@ -10,7 +10,6 @@ database:
     - "STRING"
     - "IntAct"
     - "MutationDs"
-    - "Mentions"
     - "HMDB"
     - "PathwayCommons"
     - "GWASCatalog"

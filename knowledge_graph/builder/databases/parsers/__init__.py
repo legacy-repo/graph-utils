@@ -23,6 +23,7 @@ from builder.databases.parsers.signor_parser import SIGNORParser
 from builder.databases.parsers.corum_parser import CORUMParser
 from builder.databases.parsers.exposome_parser import ExposomeExplorerParser
 from builder.databases.parsers.hpa_parser import HPAParser
+from builder.databases.parsers.smpdb_parser import SMPDBParser
 
 
 parsers = {
@@ -53,5 +54,6 @@ parsers = {
     "SIGNOR": SIGNORParser,
     "CORUM": CORUMParser,
     "ExposomeExplorer": ExposomeExplorerParser,
-    "HPA": HPAParser
+    "HPA": HPAParser,
+    "SMPDB": SMPDBParser
 }
