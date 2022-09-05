@@ -109,7 +109,7 @@ class JensenLabParser(BaseParser):
 
         entities = pd.read_csv(fileName, sep=',', dtype=str,
                                compression='gzip', low_memory=False)
-        entities = entities[config['PMC_fields']]
+        entities = entities[self.config['PMC_fields']]
         entities = entities[entities.iloc[:, 0].notnull()]
         entities = entities.set_index(list(entities.columns)[0])
         if valid_pubs is not None:
@@ -142,9 +142,9 @@ class JensenLabParser(BaseParser):
             mapping = stitch_parser.get_string_mapping(source=source)
 
         filters = []
-        if qtype in config['db_mentions_filters']:
-            filters = config['db_mentions_filters'][qtype]
-        entity1, entity2 = config['db_mentions_types'][qtype]
+        if qtype in self.config['db_mentions_filters']:
+            filters = self.config['db_mentions_filters'][qtype]
+        entity1, entity2 = self.config['db_mentions_types'][qtype]
         outputfile = os.path.join(
             self.import_directory, entity1 + "_" + entity2 + "_mentioned_in_publication.tsv")
 
