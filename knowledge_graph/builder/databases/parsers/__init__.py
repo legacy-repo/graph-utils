@@ -14,6 +14,7 @@ from builder.databases.parsers.stitch_parser import STITCHParser
 from builder.databases.parsers.string_parser import STRINGParser
 from builder.databases.parsers.intact_parser import IntActParser
 from builder.databases.parsers.mutationds_parser import MutationDsParser
+from builder.databases.parsers.jensenlab_mentions_parser import JensenLabMentionsParser
 
 
 parsers = {
@@ -35,5 +36,6 @@ parsers = {
     "STITCH": STITCHParser,
     "STRING": STRINGParser,
     "IntAct": IntActParser,
-    "MutationDs": MutationDsParser
+    "MutationDs": MutationDsParser,
+    "JensenLabMentions": JensenLabMentionsParser
 }
