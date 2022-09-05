@@ -13,6 +13,7 @@ from builder.databases.parsers.disgenet_parser import DisGEnetParser
 from builder.databases.parsers.stitch_parser import STITCHParser
 from builder.databases.parsers.string_parser import STRINGParser
 from builder.databases.parsers.intact_parser import IntActParser
+from builder.databases.parsers.mutationds_parser import MutationDsParser
 
 
 parsers = {
@@ -33,5 +34,6 @@ parsers = {
     "DisGEnet": DisGEnetParser,
     "STITCH": STITCHParser,
     "STRING": STRINGParser,
-    "IntAct": IntActParser
+    "IntAct": IntActParser,
+    "MutationDs": MutationDsParser
 }
