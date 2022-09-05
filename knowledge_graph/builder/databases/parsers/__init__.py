@@ -15,6 +15,7 @@ from builder.databases.parsers.string_parser import STRINGParser
 from builder.databases.parsers.intact_parser import IntActParser
 from builder.databases.parsers.mutationds_parser import MutationDsParser
 from builder.databases.parsers.jensenlab_mentions_parser import JensenLabMentionsParser
+from builder.databases.parsers.gwas_catalog_parser import GWASCatalogParser
 
 
 parsers = {
@@ -37,5 +38,6 @@ parsers = {
     "STRING": STRINGParser,
     "IntAct": IntActParser,
     "MutationDs": MutationDsParser,
-    "JensenLabMentions": JensenLabMentionsParser
+    "JensenLabMentions": JensenLabMentionsParser,
+    "GWASCatalog": GWASCatalogParser
 }
