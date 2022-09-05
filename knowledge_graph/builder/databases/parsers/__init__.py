@@ -14,7 +14,7 @@ from builder.databases.parsers.stitch_parser import STITCHParser
 from builder.databases.parsers.string_parser import STRINGParser
 from builder.databases.parsers.intact_parser import IntActParser
 from builder.databases.parsers.mutationds_parser import MutationDsParser
-from builder.databases.parsers.jensenlab_mentions_parser import JensenLabMentionsParser
+from builder.databases.parsers.jensenlab_parser import JensenLabParser
 from builder.databases.parsers.gwas_catalog_parser import GWASCatalogParser
 from builder.databases.parsers.dgi_db_parser import DGIdbParser
 from builder.databases.parsers.sider_parser import SIDERParser
@@ -44,7 +44,7 @@ parsers = {
     "STRING": STRINGParser,
     "IntAct": IntActParser,
     "MutationDs": MutationDsParser,
-    "JensenLabMentions": JensenLabMentionsParser,
+    "JensenLab": JensenLabParser,
     "GWASCatalog": GWASCatalogParser,
     "DGIdb": DGIdbParser,
     "SIDER": SIDERParser,
