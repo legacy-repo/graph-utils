@@ -422,7 +422,7 @@ def ontology():
     pass
 
 
-@ontology.command(help="Make the ontologies and related graph files.")
+@ontology.command(help="Parse ontologies and make related graph files.")
 @click.option('--ontology-dir', '-d', required=True,
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the downloaded database files.")
@@ -431,7 +431,7 @@ def ontology():
               help="The directory which saved the graph files.")
 @click.option('--download/--no-download', default=False, help="Whether download the source file(s)?")
 @click.option('--skip/--no-skip', default=True, help="Whether skip the existing file(s)?")
-def make_ontology(ontology_dir, output_dir, download, skip):
+def parse_ontology(ontology_dir, output_dir, download, skip):
     ontology_parser = Ontology(output_dir, ontology_dir, download, skip)
     ontology_parser.generate_graph_files()
 

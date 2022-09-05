@@ -3,7 +3,7 @@ from setuptools import setup
 
 version = "1.0.0"
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 
@@ -25,7 +25,7 @@ setup(
     author_email="yjcyxky@163.com",
     description="A Python project that allows you to analyse proteomics and clinical data, and integrate and mine knowledge from multiple biomedical databases widely used nowadays.",
     long_description=long_description,
-    long_description_content_type='text/x-rst',
+    long_description_content_type='text/markdown',
     url="https://github.com/biomedgps/biomedgps.git",
     packages=get_packages("builder") + get_packages("importer"),
     install_requires=requirements,

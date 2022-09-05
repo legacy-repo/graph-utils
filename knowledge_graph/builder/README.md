@@ -1,11 +1,11 @@
 ## How does it work?
 
 ```
-knowledge-graph make-ontology -d ~/Downloads/KG/Databases -o ~/Downloads/KG/Importers/Ontologies --download --skip
+knowledge-graph parse-ontology -d ~/Downloads/KG/Databases -o ~/Downloads/KG/Importers/Ontologies --download --skip
 
 # and
 
-knowledge-graph make-database -d /Users/codespace/Downloads/KG/Databases -o /Users/codespace/Downloads/KG/Importers/Databases --database CancerGenomeInterpreter --download --skip
+knowledge-graph parse-database -d /Users/codespace/Downloads/KG/Databases -o /Users/codespace/Downloads/KG/Importers/Databases --database CancerGenomeInterpreter --download --skip
 ```
 
 All database files are located in `~/Downloads/KG/Databases` directory, each database have own subdirectory, such as DrugBank, DO, ....

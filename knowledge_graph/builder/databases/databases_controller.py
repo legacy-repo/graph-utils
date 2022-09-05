@@ -40,7 +40,7 @@ class NotSupportedAction(Exception):
     pass
 
 
-@database.command(help="Make the databases and related graph files.")
+@database.command(help="Parse databases and make the related graph files.")
 @click.option('--db-dir', '-d', required=True,
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the downloaded database files.")
@@ -56,7 +56,7 @@ class NotSupportedAction(Exception):
               help="Hom many jobs?", default=4)
 @click.option('--download/--no-download', default=False, help="Whether download the source file(s)?")
 @click.option('--skip/--no-skip', default=True, help="Whether skip the existing file(s)?")
-def make_database(output_dir, db_dir, database, config, download, n_jobs, skip):
+def parse_database(output_dir, db_dir, database, config, download, n_jobs, skip):
     if config and len(database) > 1:
         raise NotSupportedAction("Cannot support a single config file with several databases.")
 
