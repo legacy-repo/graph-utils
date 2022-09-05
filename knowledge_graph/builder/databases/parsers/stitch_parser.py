@@ -124,6 +124,7 @@ class STITCHParser(BaseParser):
             drug_source=self.builder_config["database"]["sources"]["Drug"])
         self.parse_actions(proteinMapping, drugMapping)
         logger.info("Done Parsing database {}".format(self.database_name))
+        return set()
 
     def get_string_mapping(self, source="BLAST_UniProt_AC"):
         """
