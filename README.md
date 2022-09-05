@@ -1,7 +1,3 @@
 ## BioMedGPS
 
-### Project Structure
-
-- bomedgps
-- importer
-- studio
+A platform for building, querying and analyzing medical knowledge graph.
