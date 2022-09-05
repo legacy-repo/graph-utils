@@ -324,7 +324,7 @@ class BaseParser:
         mapping_file = os.path.join(dir_file, "complete_mapping.tsv")
         max_wait = 0
         while not os.path.isfile(mapping_file) and max_wait < 5000:
-            logger.warn("No such file %s, please wait a minute." % mapping_file)
+            logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, ont))
             time.sleep(5)
             max_wait += 1
         try:
@@ -351,14 +351,15 @@ class BaseParser:
         sources = self.builder_config["database"]["sources"]
         logger.info("Get sources from database config %s" % sources)
         if entity in sources:
-            dir = os.path.join(self.database_directory, sources[entity])
+            source = sources[entity]
+            dir = os.path.join(self.database_directory, source)
             logger.info("Get mapping from entity %s in %s" % (entity, dir))
             mapping_file = os.path.join(dir, "complete_mapping.tsv")
             max_wait = 0
             while not os.path.isfile(mapping_file) and max_wait < 5000:
                 time.sleep(15)
                 max_wait += 1
-                logger.warn("No such file %s, please wait a minute." % mapping_file)
+                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, source))
             try:
                 with open(mapping_file, 'r', encoding='utf-8') as mf:
                     for line in mf:
@@ -385,14 +386,15 @@ class BaseParser:
         sources = self.builder_config["database"]["sources"]
         logger.info("Get sources from database config %s" % sources)
         if entity in sources:
-            dir = os.path.join(self.database_directory, sources[entity])
+            source = sources[entity]
+            dir = os.path.join(self.database_directory, source)
             logger.info("Get mapping from entity %s in %s" % (entity, dir))
             mapping_file = os.path.join(dir, "complete_mapping.tsv")
             max_wait = 0
             while not os.path.isfile(mapping_file) and max_wait < 5000:
                 time.sleep(5)
                 max_wait += 1
-                logger.warn("No such file %s, please wait a minute." % mapping_file)
+                logger.warn("No such file %s, please wait a minute or build the %s firstly." % (mapping_file, source))
             try:
                 with open(mapping_file, 'r') as mf:
                     for line in mf:

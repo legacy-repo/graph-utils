@@ -31,7 +31,7 @@ def parse_database(import_directory, database_directory, database, download=True
     return stats
 
 
-@database.command()
+@database.command(help="Make the databases and related graph files.")
 @click.option('--db-dir', '-d', required=True,
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the downloaded database files.")
@@ -39,11 +39,11 @@ def parse_database(import_directory, database_directory, database, download=True
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the graph files.")
 @click.option('--database', required=True, type=click.Choice(parsers.keys()),
-              help="Which database?", multiple=True)
+              help="Which databases (you can specify the --database argument multiple times)?", multiple=True)
 @click.option('--n-jobs', '-n', required=False,
               help="Hom many jobs?", default=4)
-@click.option('--download/--no-download', default=False)
-@click.option('--skip/--no-skip', default=True)
+@click.option('--download/--no-download', default=False, help="Whether download the source file(s)?")
+@click.option('--skip/--no-skip', default=True, help="Whether skip the existing file(s)?")
 def make_database(output_dir, db_dir, database, download, n_jobs, skip):
     all_databases = database
     valid_databases = list(
@@ -55,8 +55,9 @@ def make_database(output_dir, db_dir, database, download, n_jobs, skip):
                     len(invalid_databases), invalid_databases)
     stats = Parallel(n_jobs=n_jobs)(delayed(parse_database)(
         output_dir, db_dir, database, download, skip) for database in valid_databases)
-    allstats = {val if type(
-        sublist) == set else sublist for sublist in stats for val in sublist}
+    allstats = {val if type(sublist) == set else sublist 
+                for sublist in stats for val in sublist}
+    logger.info("Stats: %s" % allstats)
     return allstats
 
 

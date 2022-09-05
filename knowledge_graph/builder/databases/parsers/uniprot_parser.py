@@ -282,8 +282,9 @@ class UniProtParser(BaseParser):
                 list(data[(entity, relationship)]), columns=header)
             output_file = os.path.join(
                 output_dir, entity+"_"+relationship.lower() + ".tsv")
-            stats.add(self._build_stats(len(
-                data[(entity, relationship)]), 'relationships', relationship, "UniProt", output_file, updated_on))
+            stats.add(self._build_stats(len(data[(entity, relationship)]), 
+                                        'relationships', relationship, "UniProt", 
+                                        output_file, updated_on))
             with open(output_file, 'a', encoding='utf-8') as ef:
                 df.to_csv(path_or_buf=ef, sep='\t',
                           header=is_first, index=False, quotechar='"',

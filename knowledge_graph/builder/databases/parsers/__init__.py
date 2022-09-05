@@ -5,14 +5,21 @@ from builder.databases.parsers.hgnc_parser import HGNCParser
 from builder.databases.parsers.hmdb_parser import HMDBParser
 from builder.databases.parsers.reactome_parser import ReactomeParser
 from builder.databases.parsers.foodb_parser import FooDBParser
+from builder.databases.parsers.pathway_commons_parser import PathwayCommonsParser
+from builder.databases.parsers.oncokb_parser import OncoKBParser
 
 
 parsers = {
-    "CancerGenomeInterpreter": CancerGenomeInterpreterParser,
+    # Base Databases
     "DrugBank": DrugBankParser,
     "UniProt": UniProtParser,
     "HGNC": HGNCParser,
     "HMDB": HMDBParser,
     "Reactome": ReactomeParser,
-    "FooDB": FooDBParser
+    "FooDB": FooDBParser,
+    # DO is located on ontology part.
+    # Domain Databases
+    "CancerGenomeInterpreter": CancerGenomeInterpreterParser,
+    "PathwayCommons": PathwayCommonsParser,
+    "OncoKB": OncoKBParser,
 }
