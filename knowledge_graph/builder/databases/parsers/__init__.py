@@ -17,6 +17,7 @@ from builder.databases.parsers.mutationds_parser import MutationDsParser
 from builder.databases.parsers.jensenlab_mentions_parser import JensenLabMentionsParser
 from builder.databases.parsers.gwas_catalog_parser import GWASCatalogParser
 from builder.databases.parsers.dgi_db_parser import DGIdbParser
+from builder.databases.parsers.sider_parser import SIDERParser
 
 
 parsers = {
@@ -41,5 +42,6 @@ parsers = {
     "MutationDs": MutationDsParser,
     "JensenLabMentions": JensenLabMentionsParser,
     "GWASCatalog": GWASCatalogParser,
-    "DGIdb": DGIdbParser
+    "DGIdb": DGIdbParser,
+    "SIDER": SIDERParser
 }

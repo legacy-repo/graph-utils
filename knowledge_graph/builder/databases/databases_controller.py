@@ -28,7 +28,8 @@ def parse_database(import_directory, database_directory, database,
     stats = set()
     Parser = parsers.get(database, None)
     if Parser:
-        parser = Parser(import_directory, database_directory, config_file, download, skip)
+        parser = Parser(import_directory, database_directory, 
+                        config_file=config_file, download=download, skip=skip)
         stats = parser.build_stats()
     return stats
 

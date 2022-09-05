@@ -87,11 +87,11 @@ class JensenLabMentionsParser(BaseParser):
         ifile = self.config['db_mentions_files'][qtype]
         if qtype == "9606":
             string_parser = STRINGParser(self.import_directory, self.database_directory, 
-                                         self.download, self.skip)
+                                         download=self.download, skip=self.skip)
             mapping = string_parser.get_string_mapping()
         elif qtype == "-1":
             stitch_parser = STITCHParser(self.import_directory, self.database_directory, 
-                                         self.download, self.skip)
+                                         download=self.download, skip=self.skip)
             source = self.builder_config['database']['sources']["Drug"]
             mapping = stitch_parser.get_string_mapping(source=source)
 
