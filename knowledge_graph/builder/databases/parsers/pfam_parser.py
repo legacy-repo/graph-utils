@@ -10,13 +10,13 @@ logger = logging.getLogger(__name__)
 
 
 class PfamParser(BaseParser):
-    def __init__(self, import_directory, database_directory, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
         self.database_name = 'Pfam'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, download, skip)
+        super().__init__(import_directory, database_directory, config_file, download, skip)
 
     def parse(self):
         entity_header = self.config['entity_header']

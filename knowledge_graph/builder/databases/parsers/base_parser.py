@@ -32,7 +32,7 @@ class BaseParser:
           2. Define the schema for each database?
           3. How to split all fields to two parts for building graph and attribute database respectively?
     '''
-    def __init__(self, import_directory, database_directory, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
         config_dir = os.path.dirname(os.path.abspath(builder.__file__))
         self.builder_config = self.read_yaml(
             os.path.join(config_dir, "config.yml"))
@@ -45,7 +45,12 @@ class BaseParser:
         else:
             self.updated_on = None
         self.database_name = self.database_name if self.database_name else None
-        self.config_fpath = self.config_fpath if self.config_fpath else None
+        # If the user pass a config file, use it instead of the default config file.
+        if config_file:
+            logger.warn("CAUTION: Use the customized config file instead of the default config.")
+            self.config_fpath = config_file
+        else:
+            self.config_fpath = self.config_fpath if self.config_fpath else None
         self.check_obj()
         self.config = self.read_config()
 

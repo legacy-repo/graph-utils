@@ -7,13 +7,13 @@ logger = logging.getLogger(__name__)
 
 
 class HGNCParser(BaseParser):
-    def __init__(self, import_directory, database_directory, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
         self.database_name = 'HGNC'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, download, skip)
+        super().__init__(import_directory, database_directory, config_file, download, skip)
 
     def parse(self):
         url = self.config['hgnc_url']

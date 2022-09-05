@@ -15,13 +15,13 @@ class NoSuchFile(Exception):
 
 
 class DrugBankParser(BaseParser):
-    def __init__(self, import_directory, database_directory, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
         self.database_name = 'DrugBank'
         config_dir = os_path.dirname(os_path.abspath(config.__file__))
         self.config_fpath = os_path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, download, skip)
+        super().__init__(import_directory, database_directory, config_file, download, skip)
 
     def parse(self):
         directory = os_path.join(self.database_directory, "DrugBank")
