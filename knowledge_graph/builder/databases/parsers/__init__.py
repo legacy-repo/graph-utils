@@ -20,6 +20,7 @@ from builder.databases.parsers.dgi_db_parser import DGIdbParser
 from builder.databases.parsers.sider_parser import SIDERParser
 from builder.databases.parsers.psp_parser import PhosphoSitePlusParser
 from builder.databases.parsers.signor_parser import SIGNORParser
+from builder.databases.parsers.corum_parser import CORUMParser
 
 
 parsers = {
@@ -47,5 +48,6 @@ parsers = {
     "DGIdb": DGIdbParser,
     "SIDER": SIDERParser,
     "PhosphoSitePlus": PhosphoSitePlusParser,
-    "SIGNOR": SIGNORParser
+    "SIGNOR": SIGNORParser,
+    "CORUM": CORUMParser
 }
