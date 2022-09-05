@@ -22,7 +22,7 @@ database:
     - "SIGNOR"
     - "CORUM"
     - "FooDB"
-    - "Exposome Explorer"
+    - "ExposomeExplorer"
     - "HPA"
     - "Reactome"
     - "SMPDB"
