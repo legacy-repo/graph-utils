@@ -22,6 +22,7 @@ from builder.databases.parsers.psp_parser import PhosphoSitePlusParser
 from builder.databases.parsers.signor_parser import SIGNORParser
 from builder.databases.parsers.corum_parser import CORUMParser
 from builder.databases.parsers.exposome_parser import ExposomeExplorerParser
+from builder.databases.parsers.hpa_parser import HPAParser
 
 
 parsers = {
@@ -51,5 +52,6 @@ parsers = {
     "PhosphoSitePlus": PhosphoSitePlusParser,
     "SIGNOR": SIGNORParser,
     "CORUM": CORUMParser,
-    "ExposomeExplorer": ExposomeExplorerParser
+    "ExposomeExplorer": ExposomeExplorerParser,
+    "HPA": HPAParser
 }
