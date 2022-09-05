@@ -1,4 +1,0 @@
-[console_scripts]
-make-database = builder.databases.databases_controller:main
-make-ontology = builder.ontologies.ontologies_controller:main
-

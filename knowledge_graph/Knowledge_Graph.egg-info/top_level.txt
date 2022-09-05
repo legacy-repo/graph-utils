@@ -1,8 +1,0 @@
-builder
-builder/databases
-builder/databases/config
-builder/databases/parsers
-builder/experiments
-builder/ontologies
-builder/ontologies/config
-builder/ontologies/parsers
