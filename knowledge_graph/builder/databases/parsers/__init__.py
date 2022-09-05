@@ -7,6 +7,8 @@ from builder.databases.parsers.reactome_parser import ReactomeParser
 from builder.databases.parsers.foodb_parser import FooDBParser
 from builder.databases.parsers.pathway_commons_parser import PathwayCommonsParser
 from builder.databases.parsers.oncokb_parser import OncoKBParser
+from builder.databases.parsers.pfam_parser import PfamParser
+from builder.databases.parsers.refseq_parser import RefSeqParser
 
 
 parsers = {
@@ -22,4 +24,6 @@ parsers = {
     "CancerGenomeInterpreter": CancerGenomeInterpreterParser,
     "PathwayCommons": PathwayCommonsParser,
     "OncoKB": OncoKBParser,
+    "Pfam": PfamParser,
+    "RefSeq": RefSeqParser
 }

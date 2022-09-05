@@ -419,6 +419,29 @@ class BaseParser:
         handle = gzip.open(filepath, "rt")
 
         return handle
+    
+    def list_ftp_directory(self, ftp_url, user='', password=''):
+        """
+        Lists all files present in folder from FTP server.
+
+        :param str ftp_url: link to access ftp server.
+        :param str user: username to access ftp server if required.
+        :param str password: password to access ftp server if required.
+        :return: List of files contained in ftp server folder provided with ftp_url.
+        """
+        try:
+            domain = ftp_url.split('/')[2]
+            if len(ftp_url.split('/')) > 3:
+                ftp_dir = '/'.join(ftp_url.split('/')[3:])
+            else:
+                ftp_dir = ''
+            with ftplib.FTP(domain) as ftp:
+                ftp.login(user=user, passwd=password)
+                files = ftp.nlst(ftp_dir)
+        except ftplib.error_perm as err:
+            raise Exception("builder_utils - Problem listing file at {} ftp directory > {}.".format(ftp_dir, err))
+
+        return files
 
     def _parse_fasta(self, file_handler):
         """
