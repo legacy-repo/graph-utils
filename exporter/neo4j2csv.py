@@ -123,9 +123,10 @@ def write_batch(fname, dicts):
 @click.option('--show-attrs/--no-show-attrs', default=True, help='Whether output all the attributes?')
 @click.option('--output-dir', '-o', default='.', help='The output directory')
 @click.option('--output-format', default='gephi', type=click.Choice(['gephi', 'dglke']), help='The format of output file?')
-@click.option('--batch', '-b', default=0, help='which batch do you want to start?')
+@click.option('--batches', '-B', default=1, help='How many batches do you want to export?')
+@click.option('--batch-nth', '-b', default=0, help='which batch do you want to start?')
 @click.option('--batch-size', '-s', default=10, type=click.IntRange(0, 1000, clamp=True), help='How many records do you want to output in one batch?')
-def export(uri, database, username, password, query_str, show_attrs, output_dir, identity, output_format, batch, batch_size):
+def export(uri, database, username, password, query_str, show_attrs, output_dir, identity, output_format, batches, batch_nth, batch_size):
     """Export subgraph to csv."""
     print("Connect to %s" % uri)
     print("Output files are located in %s" % os.path.abspath(output_dir))
@@ -133,20 +134,22 @@ def export(uri, database, username, password, query_str, show_attrs, output_dir,
         graph = Graph("neo4j://%s" % uri, name=database,
                       auth=(username, password))
     else:
-        graph = Graph("bolt+s://%s" % uri, name=database)
+        graph = Graph("neo4j://%s" % uri, name=database)
 
     if not re.match(r'.*RETURN n,r', query_str):
         raise Exception("Your cyper clause need to return nodes and relationships by using RETURN, such as `RETURN n,r`")
 
-    if query_str:
-        query = graph.run("%s SKIP %s LIMIT %s;" % (query_str, batch * batch_size, batch_size))
-        obatch = [format_record(i, identity, show_attrs, output_format) for i in query]
-    else:
-        query = graph.run("MATCH (n) OPTIONAL MATCH (n)-[r]-() RETURN n, r SKIP %s LIMIT %s;" % (batch * batch_size, batch_size))
-        obatch = [format_record(i, identity, show_attrs, output_format) for i in query]
+    for i in range(1, batches + 1):
+        print("Export the %s-th batch..." % i)
+        if query_str:
+            query = graph.run("%s SKIP %s LIMIT %s;" % (query_str, batch_nth * batch_size * i, batch_size * i))
+            obatch = [format_record(i, identity, show_attrs, output_format) for i in query]
+        else:
+            query = graph.run("MATCH (n) OPTIONAL MATCH (n)-[r]-() RETURN n, r SKIP %s LIMIT %s;" % (batch_nth * batch_size * i, batch_size * i))
+            obatch = [format_record(i, identity, show_attrs, output_format) for i in query]
 
-    write_batch(os.path.join(output_dir, "nodes.csv"), list(map(lambda x: x[0], obatch)))
-    write_batch(os.path.join(output_dir, "relationship.csv"), list(map(lambda x: x[1], obatch)))
+        write_batch(os.path.join(output_dir, "nodes.csv"), list(map(lambda x: x[0], obatch)))
+        write_batch(os.path.join(output_dir, "relationship.csv"), list(map(lambda x: x[1], obatch)))
         
 
 
