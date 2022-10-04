@@ -2,8 +2,8 @@
 A tool for building a knowledge graph by parsing and connecting more than twenty databases.
 
 ```bash
-(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > knowledge-graph --help
-Usage: knowledge-graph [OPTIONS] COMMAND [ARGS]...
+(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > graph-builder --help
+Usage: graph-builder [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
@@ -19,8 +19,8 @@ Commands:
 #### Step 1. Download and parse ontology databases
 
 ```bash
-(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > knowledge-graph parse-ontology --help
-Usage: knowledge-graph parse-ontology [OPTIONS]
+(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > graph-builder parse-ontology --help
+Usage: graph-builder parse-ontology [OPTIONS]
 
   Parse ontologies and make related graph files.
 
@@ -39,8 +39,8 @@ Options:
 #### Step 2. Download and parse databases
 
 ```bash
-(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > knowledge-graph parse-database --help
-Usage: knowledge-graph parse-database [OPTIONS]
+(biomedgps) ➜ /Users/codespace/Documents/Code/BioMedGPS git:(master) ✗ > graph-builder parse-database --help
+Usage: graph-builder parse-database [OPTIONS]
 
   Parse databases and make the related graph files.
 

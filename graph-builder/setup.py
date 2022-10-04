@@ -19,7 +19,7 @@ def get_packages(package):
 
 
 setup(
-    name="knowledge-graph",
+    name="graph-builder",
     version=version,
     author="Jingcheng Yang",
     author_email="yjcyxky@163.com",
@@ -31,7 +31,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'knowledge-graph=builder:knowledge_graph',
+            'graph-builder=builder:knowledge_graph',
         ]
     },
     classifiers=[
