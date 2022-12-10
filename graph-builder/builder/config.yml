@@ -2,7 +2,7 @@ database:
   databases:
     - "DrugBank"
     - "Jensenlab" # JensenLab and JensemLabMentions
-    - "HGNC"
+    - "HGNC_MGI"
     - "RefSeq"
     - "UniProt"
     - "DisGEnet"
@@ -30,7 +30,7 @@ database:
     Drug: "DrugBank"
     Metabolite: "HMDB"
     Protein: "UniProt"
-    Gene: "HGNC"
+    Gene: "HGNC_MGI"
     Food: "FooDB"
     Pathway: "Reactome"
     Disease: "DO"

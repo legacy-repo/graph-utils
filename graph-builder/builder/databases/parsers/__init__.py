@@ -1,7 +1,7 @@
 from builder.databases.parsers.cancer_genome_interpreter_parser import CancerGenomeInterpreterParser
 from builder.databases.parsers.drug_bank_parser import DrugBankParser
 from builder.databases.parsers.uniprot_parser import UniProtParser
-from builder.databases.parsers.hgnc_parser import HGNCParser
+from builder.databases.parsers.hgnc_mgi_parser import HGNC_MGI_Parser
 from builder.databases.parsers.hmdb_parser import HMDBParser
 from builder.databases.parsers.reactome_parser import ReactomeParser
 from builder.databases.parsers.foodb_parser import FooDBParser
@@ -30,7 +30,7 @@ parsers = {
     # Base Databases
     "DrugBank": DrugBankParser,
     "UniProt": UniProtParser,
-    "HGNC": HGNCParser,
+    "HGNC_MGI": HGNC_MGI_Parser,
     "HMDB": HMDBParser,
     "Reactome": ReactomeParser,
     "FooDB": FooDBParser,

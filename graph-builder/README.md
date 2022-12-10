@@ -52,7 +52,7 @@ Options:
                                   [required]
 
   -c, --config PATH               The config file related with database.
-  --database [DrugBank|UniProt|HGNC|HMDB|Reactome|FooDB|CancerGenomeInterpreter|PathwayCommons|OncoKB|Pfam|RefSeq|DisGEnet|STITCH|STRING|IntAct|MutationDs|JensenLab|GWASCatalog|DGIdb|SIDER|PhosphoSitePlus|SIGNOR|CORUM|ExposomeExplorer|HPA|SMPDB]
+  --database [DrugBank|UniProt|HGNC_MGI|HMDB|Reactome|FooDB|CancerGenomeInterpreter|PathwayCommons|OncoKB|Pfam|RefSeq|DisGEnet|STITCH|STRING|IntAct|MutationDs|JensenLab|GWASCatalog|DGIdb|SIDER|PhosphoSitePlus|SIGNOR|CORUM|ExposomeExplorer|HPA|SMPDB]
                                   Which databases (you can specify the
                                   --database argument multiple times)?
                                   [required]

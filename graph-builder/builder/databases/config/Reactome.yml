@@ -49,3 +49,4 @@ relationships_header:
 linkout_url: "https://reactome.org/PathwayBrowser/#/PATHWAY"
 organisms:
   "Homo sapiens": 9606
+  "Mus musculus": 10090
