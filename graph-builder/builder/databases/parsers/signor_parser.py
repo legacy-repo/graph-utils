@@ -89,7 +89,7 @@ class SIGNORParser(BaseParser):
         stats = set()
         entities, relationships, entities_header, relationships_headers = self.parse()
         entity_outputfile = os.path.join(
-            self.import_directory, "signor_Modified_protein.tsv")
+            self.import_directory, "SIGNOR_Modified_protein.tsv")
         self.write_entities(entities, entities_header, entity_outputfile)
         logger.info("Database {} - Number of {} entities: {}".format(
             self.database_name, "Modified_protein", len(entities)))
@@ -97,7 +97,7 @@ class SIGNORParser(BaseParser):
                                     self.database_name, entity_outputfile, self.updated_on))
         for entity, relationship in relationships:
             rel_header = ["START_ID", "END_ID", "TYPE", "source"]
-            prefix = 'signor_'+entity.lower()
+            prefix = 'SIGNOR_' + entity.lower()
             if relationship in relationships_headers:
                 rel_header = relationships_headers[relationship]
             if relationship == 'mentioned_in_publication':

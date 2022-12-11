@@ -187,7 +187,7 @@ class PhosphoSitePlusParser(BaseParser):
         stats = set()
         entities, relationships, entities_header, relationships_headers = self.parse()
         entity_outputfile = os.path.join(
-            self.import_directory, "psp_Modified_protein.tsv")
+            self.import_directory, "PhosphoSitePlus_Modified_protein.tsv")
         self.write_entities(entities, entities_header, entity_outputfile)
         logger.info("Database {} - Number of {} entities: {}".format(
             self.database_name, "Modified_protein", len(entities)))
@@ -198,7 +198,7 @@ class PhosphoSitePlusParser(BaseParser):
             if entity in relationships_headers:
                 rel_header = relationships_headers[entity]
             outputfile = os.path.join(self.import_directory,
-                                      "psp_"+entity.lower()+"_"+relationship.lower()+".tsv")
+                                      "PhosphoSitePlus_" + entity.lower() + "_" + relationship.lower() + ".tsv")
             self.write_relationships(relationships[(entity, relationship)],
                                      rel_header, outputfile)
             logger.info("Database {} - Number of {} relationships: {}".format(self.database_name, relationship,

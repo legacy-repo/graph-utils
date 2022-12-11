@@ -1,0 +1,18 @@
+ontology_entities:
+  - "Disease"
+  - "Tissue"
+  - "Biological_process"
+  - "Molecular_function"
+  - "Cellular_component"
+  - "Modification"
+  - "Clinical_variable"
+  - "Phenotype"
+  - "Experiment"
+  - "Experimental_factor"
+  - "Units"
+
+ontology_mappings:
+  Experimental_factor:
+    - Disease
+    - Clinical_variable
+    - Phenotype

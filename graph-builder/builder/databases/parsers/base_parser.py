@@ -39,7 +39,7 @@ class BaseParser:
         config_dir = os.path.dirname(os.path.abspath(builder.__file__))
         self.builder_config = self.read_yaml(
             os.path.join(config_dir, "config.yml"))
-        self.import_directory = import_directory
+
         self.database_directory = database_directory
         self.download = download
         self.skip = skip
@@ -47,7 +47,13 @@ class BaseParser:
             self.updated_on = str(datetime.date.today())
         else:
             self.updated_on = None
+
         self.database_name = self.database_name if self.database_name else None
+
+        # Store the database files in a subdirectory.
+        self.import_directory = os.path.join(import_directory, self.database_name)
+        self.check_directory(self.import_directory)
+
         # If the user pass a config file, use it instead of the default config file.
         if config_file:
             logger.warn(
