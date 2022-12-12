@@ -34,6 +34,15 @@ IMPORT_ONTOLOGY_DATA:
         MERGE (e1)-[r:HAS_PARENT]->(e2)
         RETURN COUNT(r) AS c;
 
+REMOVE_ONTOLOGY_DATA:
+    'name': "remove ontology data"
+    'description': "Remove all the ontology nodes and relationships"
+    'query': >
+        DROP CONSTRAINT ON (e:ENTITY) ASSERT e.id IS UNIQUE;
+        DROP INDEX ON :ENTITY(name);
+        MATCH (n:ENTITY)-[r:HAS_PARENT]-() DETACH DELETE r;
+        MATCH (n:ENTITY) DETACH DELETE n;
+
 IMPORT_ONTOLOGY_MAPPING_DATA:
     'name': "import ontology mappings"
     'description': "Creates relationships between different onotologies (i.e (EFO)-[:MAPS_TO]->(Disease)"
@@ -46,6 +55,11 @@ IMPORT_ONTOLOGY_MAPPING_DATA:
         MERGE (e1)-[r:MAPS_TO]->(e2)
         RETURN COUNT(r) AS c;
 
+REMOVE_ONTOLOGY_MAPPING_DATA:
+    'name': "remove ontology mappings"
+    'description': "Remove all the relationships between different ontologies."
+    'query': >
+        MATCH (n:ENTITY1)-[r:MAPS_TO]-(m:ENTITY2) DETACH DELETE r;
 
 # Databases
 IMPORT_GENE_DATA:
@@ -53,13 +67,19 @@ IMPORT_GENE_DATA:
     'description': 'Creates the Gene nodes'
     'query': >
         CREATE CONSTRAINT ON (g:Gene) ASSERT g.id IS UNIQUE;
-        CREATE CONSTRAINT ON (g:Gene) ASSERT g.name IS UNIQUE;
         USING PERIODIC COMMIT 10000
         LOAD CSV WITH HEADERS FROM "file:///IMPORTDIR/HGNC_MGI/Gene.tsv" AS line
         FIELDTERMINATOR '\t'
         MERGE (g:Gene {id:line.ID})
         ON CREATE SET g.name=line.name,g.family=line.family,g.taxid=line.taxid,g.synonyms=SPLIT(line.synonyms,',')
         RETURN COUNT(g) AS c;
+
+REMOVE_GENE_DATA:
+    'name': "remove gene data"
+    'description': "Remove all the gene nodes and relationships"
+    'query': >
+        DROP CONSTRAINT ON (g:Gene) ASSERT g.id IS UNIQUE;
+        MATCH (n:Gene) DETACH DELETE n;
 
 IMPORT_CHROMOSOME_DATA:
     'name': 'import chromosome data'
@@ -71,6 +91,13 @@ IMPORT_CHROMOSOME_DATA:
         MERGE (c:Chromosome {id:line.ID})
         ON CREATE SET c.name=line.name,c.taxid=line.taxid
         RETURN COUNT(c) AS c;
+
+REMOVE_CHROMOSOME_DATA:
+    'name': "remove chromosome data"
+    'description': "Remove all the chromosome nodes and relationships"
+    'query': >
+        DROP CONSTRAINT ON (c:Chromosome) ASSERT c.id IS UNIQUE;
+        MATCH (c:Chromosome) DETACH DELETE c;
 
 IMPORT_TRANSCRIPT_DATA:
     'name': 'import transcript data'
@@ -97,6 +124,15 @@ IMPORT_TRANSCRIPT_DATA:
         MATCH (t:Transcript {id:line.END_ID})
         MERGE (g)-[r:TRANSCRIBED_INTO]->(t)
         RETURN COUNT(r) AS c;
+
+REMOVE_TRANSCRIPT_DATA:
+    'name': "remove transcript data"
+    'description': "Remove all the transcript nodes and relationships"
+    'query': >
+        DROP CONSTRAINT ON (t:Transcript) ASSERT t.id IS UNIQUE;
+        MATCH (n:Gene)-[r:TRANSCRIBED_INTO]-(m:Transcript) DETACH DELETE r;
+        MATCH (n:Transcript)-[r:LOCATED_IN]-(m:Chromosome) DETACH DELETE r;
+        MATCH (t:Transcript) DETACH DELETE t;
 
 IMPORT_PROTEIN_DATA:
     'name': "import protein data"
@@ -152,6 +188,21 @@ IMPORT_PROTEIN_DATA:
         MERGE (t)-[r:TRANSLATED_INTO]->(p)
         RETURN COUNT(r) AS c;
 
+REMOVE_PROTEIN_DATA:
+    'name': "remove protein data"
+    'description': "Remove all the protein nodes and relationships"
+    'query': >
+        DROP INDEX ON :Protein(name);
+        DROP INDEX ON :Protein(accession);
+        DROP CONSTRAINT ON (p:Protein) ASSERT p.id IS UNIQUE;
+        MATCH (n:Protein)-[r:HAS_SEQUENCE]-(m:Amino_acid_sequence) DETACH DELETE r;
+        MATCH (n:Peptide)-[r:BELONGS_TO_PROTEIN]-(m:Protein) DETACH DELETE r;
+        MATCH (n:Gene)-[r:TRANSLATED_INTO]-(m:Protein) DETACH DELETE r;
+        MATCH (n:Transcript)-[r:TRANSLATED_INTO]-(m:Protein) DETACH DELETE r;
+        MATCH (n:Protein) DETACH DELETE n;
+        MATCH (n:Peptide) DETACH DELETE n;
+        MATCH (n:Amino_acid_sequence) DETACH DELETE n;
+
 IMPORT_PROTEIN_ANNOTATIONS:
     'name': 'import protein annotations'
     'description': 'Loads into the database all the Protein nodes annotations: Gene Ontology terms'
@@ -177,6 +228,14 @@ IMPORT_PROTEIN_ANNOTATIONS:
         MATCH (b:Biological_process {id:line.END_ID})
         MERGE (p)-[r:ASSOCIATED_WITH{score:toFloat(line.score),source:line.source,evidence_type:line.evidence_type}]->(b)
         RETURN COUNT(r) AS c;
+
+REMOVE_PROTEIN_ANNOTATIONS:
+    'name': "remove protein annotations"
+    'description': "Remove all the protein nodes annotations"
+    'query': >
+        MATCH (n:Protein)-[r:ASSOCIATED_WITH]-(m:Cellular_component) DETACH DELETE r;
+        MATCH (n:Protein)-[r:ASSOCIATED_WITH]-(m:Molecular_function) DETACH DELETE r;
+        MATCH (n:Protein)-[r:ASSOCIATED_WITH]-(m:Biological_process) DETACH DELETE r;
 
 IMPORT_MODIFIED_PROTEINS:
     'name': 'import modified proteins'
@@ -218,6 +277,17 @@ IMPORT_MODIFIED_PROTEINS:
         MERGE (m)-[r:IS_SUBSTRATE_OF{score:toFloat(line.score),regulation:line.regulation,source:line.source,evidence_type:line.evidence_type}]->(p)
         RETURN COUNT(r) AS c;
 
+REMOVE_MODIFIED_PROTEINS:
+    'name': "remove modified proteins"
+    'description': "Remove all Modified_protein nodes and loads the relationships to Modification, Protein and Peptide nodes"
+    'query': >
+        DROP CONSTRAINT ON (m:Modified_protein) ASSERT m.id IS UNIQUE;
+        MATCH (n:Modified_protein) DETACH DELETE n;
+        MATCH (n:Modified_protein)-[r:HAS_MODIFICATION]-(m:Modification) DETACH DELETE r;
+        MATCH (n:Protein)-[r:HAS_MODIFIED_SITE]-(m:Modified_protein) DETACH DELETE r;
+        MATCH (n:Peptide)-[r:HAS_MODIFIED_SITE]-(m:Modified_protein) DETACH DELETE r;
+        MATCH (n:Modified_protein)-[r:IS_SUBSTRATE_OF]-(m:Protein) DETACH DELETE r;
+
 IMPORT_MODIFIED_PROTEIN_ANNOTATIONS:
     'name': 'import modified protein annotations'
     'description': 'Loads into the database all the Modified_protein nodes annotations: relationship to Disease and to Biological_processes'
@@ -237,6 +307,13 @@ IMPORT_MODIFIED_PROTEIN_ANNOTATIONS:
         MERGE (m)-[r:ASSOCIATED_WITH{score:toFloat(line.score),source:line.source,evidence_type:line.evidence_type,publications:line.publications,action:line.action}]->(b)
         RETURN COUNT(r) AS c;
 
+REMOVE_MODIFIED_PROTEIN_ANNOTATIONS:
+    'name': "remove modified protein annotations"
+    'description': "Remove all the Modified_protein nodes annotations: relationship to Disease and to Biological_processes"
+    'query': >
+        MATCH (n:Modified_protein)-[r:ASSOCIATED_WITH]-(m:Disease) DETACH DELETE r;
+        MATCH (n:Modified_protein)-[r:ASSOCIATED_WITH]-(m:Biological_process) DETACH DELETE r;
+
 IMPORT_PROTEIN_STRUCTURES:
     'name': 'import protein structure data'
     'description': 'Creates Protein structure nodes and their relationships to Protein nodes'
@@ -255,3 +332,11 @@ IMPORT_PROTEIN_STRUCTURES:
         MATCH (s:Protein_structure {id:line.END_ID})
         MERGE (p)-[r:HAS_STRUCTURE{source:line.source}]->(s)
         RETURN COUNT(r) AS c;
+
+REMOVE_PROTEIN_STRUCTURES:
+    'name': "remove protein structure data"
+    'description': "Remove all the Modified_protein nodes annotations: relationship to Disease and to Biological_processes"
+    'query': >
+        DROP CONSTRAINT ON (p:Protein_structure) ASSERT p.id IS UNIQUE;
+        MATCH (n:Protein_structure) DETACH DELETE n;
+        MATCH (n:Protein)-[r:HAS_STRUCTURE]-(m:Protein_structure) DETACH DELETE r;

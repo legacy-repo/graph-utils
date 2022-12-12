@@ -14,13 +14,15 @@ NA_MARKER = ""
 
 
 class HGNC_MGI_Parser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'HGNC_MGI'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def parse(self):
         hgnc = self.parse_hgnc()
@@ -51,8 +53,10 @@ class HGNC_MGI_Parser(BaseParser):
                 status = data[5]
                 gene_family = data[12]
                 synonyms = data[18:23]
-                entrez_id = ",".join(list(filter(lambda item: re.match(r"[0-9]+", str(item)), synonyms))) or NA_MARKER
-                ensembl_id = ",".join(list(filter(lambda item: re.match(r"EN.*", str(item)), synonyms))) or NA_MARKER
+                entrez_id = ",".join(list(filter(lambda item: re.match(
+                    r"[0-9]+", str(item)), synonyms))) or NA_MARKER
+                ensembl_id = ",".join(
+                    list(filter(lambda item: re.match(r"EN.*", str(item)), synonyms))) or NA_MARKER
                 # transcript = data[23]
                 if status != "Approved":
                     continue
@@ -66,7 +70,8 @@ class HGNC_MGI_Parser(BaseParser):
         return entities, entities_header
 
     def merge_duplicated(self, filepath):
-        df = pd.read_csv(filepath, delimiter="\t", dtype=object, index_col=False)
+        df = pd.read_csv(filepath, delimiter="\t",
+                         dtype=object, index_col=False)
         renamed_d = df.rename(columns={
             "3. marker symbol": "gene_symbol",
             "4. marker name": "name",
@@ -118,8 +123,10 @@ class HGNC_MGI_Parser(BaseParser):
             gene_symbol = row["gene_symbol"]
             gene_name = row["name"]
             gene_family = ""
-            entrez_id = row["entrez_id"] if str(row["entrez_id"]) != "nan" else NA_MARKER
-            ensembl_id = row["ensembl_id"] if str(row["ensembl_id"]) != "nan" else NA_MARKER
+            entrez_id = row["entrez_id"] if str(
+                row["entrez_id"]) != "nan" else NA_MARKER
+            ensembl_id = row["ensembl_id"] if str(
+                row["ensembl_id"]) != "nan" else NA_MARKER
             other_synonyms = ""
 
             entities.add((gene_symbol, "Gene", gene_name,

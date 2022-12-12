@@ -12,13 +12,15 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class UniProtParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'UniProt'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def build_stats(self):
         logger.info("Config file(%s): %s" % (self.config_fpath, self.config))
@@ -115,7 +117,8 @@ class UniProtParser(BaseParser):
         regex_transcript = r"(-\d+$)"
         taxids = self.config['species']
 
-        proteins_output_file = os.path.join(self.import_directory, "Protein.tsv")
+        proteins_output_file = os.path.join(
+            self.import_directory, "Protein.tsv")
         pdbs_output_file = os.path.join(
             self.import_directory, "Protein_structures.tsv")
         proteins = {}
@@ -206,7 +209,8 @@ class UniProtParser(BaseParser):
             uf.close()
 
         if len(proteins) > 0:
-            entities, relationships, pdb_entities = self.format_output(proteins)
+            entities, relationships, pdb_entities = self.format_output(
+                proteins)
             stats.update(self.print_single_file(
                 entities, self.config['proteins_header'], proteins_output_file, "entity", "Protein", is_first, self.updated_on))
             stats.update(self.print_single_file(
@@ -284,8 +288,8 @@ class UniProtParser(BaseParser):
                 list(data[(entity, relationship)]), columns=header)
             output_file = os.path.join(
                 output_dir, entity+"_"+relationship.lower() + ".tsv")
-            stats.add(self._build_stats(len(data[(entity, relationship)]), 
-                                        'relationships', relationship, "UniProt", 
+            stats.add(self._build_stats(len(data[(entity, relationship)]),
+                                        'relationships', relationship, "UniProt",
                                         output_file, updated_on))
             with open(output_file, 'a', encoding='utf-8') as ef:
                 df.to_csv(path_or_buf=ef, sep='\t',
@@ -318,8 +322,9 @@ class UniProtParser(BaseParser):
         fileName = os.path.join(directory, url.split('/')[-1])
         if self.download:
             self.download_db(url, directory)
-            
-        known_variants = os.path.join(self.import_directory, "Known_variant.tsv")
+
+        known_variants = os.path.join(
+            self.import_directory, "Known_variant.tsv")
         logger.info("Generate file %s" % known_variants)
         logger.info("Generate multiple files about relationships...")
 
@@ -374,7 +379,8 @@ class UniProtParser(BaseParser):
                     if len(entities) >= 1000:
                         stats.update(self.print_single_file(entities, self.config['variants_header'],
                                                             known_variants, "entity", "Known_variant", is_first, self.updated_on))
-                        stats.update(self.print_multiple_relationships_files(relationships, self.config['relationships_header'], self.import_directory, is_first, self.updated_on))
+                        stats.update(self.print_multiple_relationships_files(
+                            relationships, self.config['relationships_header'], self.import_directory, is_first, self.updated_on))
                         entities = set()
                         relationships = defaultdict(set)
 

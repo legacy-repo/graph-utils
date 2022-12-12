@@ -12,13 +12,15 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class STRINGParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'STRING'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def parse(self):
         mapping = self.get_string_mapping()
@@ -44,7 +46,7 @@ class STRINGParser(BaseParser):
         associations = gzip.open(f, 'r')
         first = True
         with open(outputfile, 'w') as csvfile:
-            writer = csv.writer(csvfile, delimiter='\t', escapechar='\\', 
+            writer = csv.writer(csvfile, delimiter='\t', escapechar='\\',
                                 quotechar='"', quoting=csv.QUOTE_ALL)
             writer.writerow(header)
             for line in associations:
@@ -72,7 +74,8 @@ class STRINGParser(BaseParser):
 
     def parse_actions(self, proteinMapping, drugMapping=None):
         url = None
-        bool_dict = {'t': True, 'T': True, 'True': True, 'TRUE': True, 'f': False, 'F': False, 'False': False, 'FALSE': False}
+        bool_dict = {'t': True, 'T': True, 'True': True, 'TRUE': True,
+                     'f': False, 'F': False, 'False': False, 'FALSE': False}
         header = self.config['header_actions']
         relationship = "COMPILED_ACTS_ON"
         stored = set()

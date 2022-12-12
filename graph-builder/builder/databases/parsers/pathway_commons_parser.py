@@ -11,13 +11,15 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class PathwayCommonsParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'PathwayCommons'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def parse(self):
         url = self.config['pathwayCommons_pathways_url']
@@ -40,7 +42,7 @@ class PathwayCommonsParser(BaseParser):
             ptw_dict = dict([item.split(": ")[0], ":".join(
                 item.split(": ")[1:])] for item in data[1].split("; "))
             proteins = data[2:]
-            if "organism" in ptw_dict and ptw_dict["organism"] == "9606":
+            if "organism" in ptw_dict and ptw_dict["organism"] in self.organisms:
                 name = ptw_dict["name"]
                 source = ptw_dict["datasource"]
             else:

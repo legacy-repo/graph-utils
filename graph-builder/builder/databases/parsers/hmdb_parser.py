@@ -13,13 +13,15 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class HMDBParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'HMDB'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def parse(self):
         directory = os.path.join(self.database_directory, "HMDB")
@@ -29,8 +31,10 @@ class HMDBParser(BaseParser):
             ontology="Disease", source=self.config['HMDB_DO_source'])
         mapping.update(self.get_mapping_from_ontology(
             ontology="Tissue", source=None))
-        entities, attributes = self.build_metabolite_entity(directory, metabolites)
-        relationships = self.build_relationships_from_hmdb(metabolites, mapping)
+        entities, attributes = self.build_metabolite_entity(
+            directory, metabolites)
+        relationships = self.build_relationships_from_hmdb(
+            metabolites, mapping)
         entities_header = ['ID'] + attributes
         relationships_header = self.config['relationships_header']
 

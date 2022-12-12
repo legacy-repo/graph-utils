@@ -11,14 +11,16 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class IntActParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'IntAct'
         config_dir = os.path.dirname(os.path.abspath(config.__file__))
         self.config_fpath = os.path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
-        
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
+
     def parse(self):
         intact_dictionary = defaultdict()
         stored = set()
@@ -43,7 +45,7 @@ class IntActParser(BaseParser):
                 data = line.rstrip("\r\n").split("\t")
                 intA = data[0].split(":")[1]
                 intB = data[1].split(':')
-                if len(intB)> 1:
+                if len(intB) > 1:
                     intB = intB[1]
                 else:
                     continue
@@ -70,30 +72,35 @@ class IntActParser(BaseParser):
                     if (intA, intB) in intact_dictionary:
                         intact_dictionary[(intA, intB)]['methods'].add(method)
                         intact_dictionary[(intA, intB)]['sources'].add(source)
-                        intact_dictionary[(intA, intB)]['publications'].add(publications.replace('|', ','))
+                        intact_dictionary[(intA, intB)]['publications'].add(
+                            publications.replace('|', ','))
                         intact_dictionary[(intA, intB)]['itype'].add(itype)
                     else:
-                        intact_dictionary[(intA, intB)] = {'methods': set([method]), 'sources': set([source]), 'publications': set([publications]), 'itype': set([itype]), 'score': score}
+                        intact_dictionary[(intA, intB)] = {'methods': set([method]), 'sources': set(
+                            [source]), 'publications': set([publications]), 'itype': set([itype]), 'score': score}
         for (intA, intB) in intact_dictionary:
             if (intA, intB, intact_dictionary[(intA, intB)]["score"]) not in stored:
-                relationships.add((intA, intB, "CURATED_INTERACTS_WITH", intact_dictionary[(intA, intB)]['score'], ",".join(intact_dictionary[(intA, intB)]['itype']), ",".join(intact_dictionary[(intA, intB)]['methods']), ",".join(intact_dictionary[(intA, intB)]['sources']), ",".join(intact_dictionary[(intA, intB)]['publications'])))
-                stored.add((intA, intB, intact_dictionary[(intA, intB)]["score"]))
+                relationships.add((intA, intB, "CURATED_INTERACTS_WITH", intact_dictionary[(intA, intB)]['score'], ",".join(intact_dictionary[(intA, intB)]['itype']), ",".join(
+                    intact_dictionary[(intA, intB)]['methods']), ",".join(intact_dictionary[(intA, intB)]['sources']), ",".join(intact_dictionary[(intA, intB)]['publications'])))
+                stored.add(
+                    (intA, intB, intact_dictionary[(intA, intB)]["score"]))
 
         # self.remove_directory(directory)
 
         return (relationships, header, outputfileName)
-    
+
     def build_stats(self):
         stats = set()
         relationships, header, outputfileName = self.parse()
         outputfile = os.path.join(self.import_directory, outputfileName)
         self.write_relationships(relationships, header, outputfile)
-        logger.info("Database {} - Number of {} relationships: {}".format(self.database_name, "curated_interacts_with", len(relationships)))
-        stats.add(self._build_stats(len(relationships), "relationships", "curated_interacts_with", 
+        logger.info("Database {} - Number of {} relationships: {}".format(
+            self.database_name, "curated_interacts_with", len(relationships)))
+        stats.add(self._build_stats(len(relationships), "relationships", "curated_interacts_with",
                                     self.database_name, outputfile, self.updated_on))
         logger.success("Done Parsing database {}".format(self.database_name))
         return stats
-    
+
     def is_number(self, s):
         """
         This function checks if given input is a float and returns True if so, and False if it is not.

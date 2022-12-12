@@ -55,13 +55,15 @@ def load_into_database(driver, queries, requester):
     regex = r"file:\/\/\/(.+\.tsv)"
     result = None
     for query in queries:
+        session = None
         try:
             if "file" in query:
                 matches = re.search(regex, query)
                 if matches:
                     file_path = matches.group(1)
                     if os.path.isfile(unquote(file_path)):
-                        result, session = connector.commit_query(driver, query+";")
+                        result, session = connector.commit_query(
+                            driver, query+";")
                         record = result.single()
                         if record is not None and 'c' in record:
                             counts = record['c']
@@ -86,7 +88,7 @@ def load_into_database(driver, queries, requester):
             logger.error(
                 "Loading: {}, file: {}, line: {} - query: {}".format(err, fname, exc_tb.tb_lineno, query))
         finally:
-            if session and not session.closed():
+            if session:
                 session.close()
 
     return result
@@ -104,7 +106,8 @@ def importer():
 @click.option('--db-url', '-D', required=True, help="Neo4j database url. Please contain database name, such as localhost:7687/default.")
 @click.option('--db-username', '-U', default="neo4j", help="Neo4j database username.")
 @click.option('--db-password', '-P', default="NeO4J", help="Neo4j database password.")
-def ontology(ontology_dir, db_url, db_username, db_password):
+@click.option('--delete', is_flag=True, default=False, help="Import or delete data.")
+def ontology(ontology_dir, db_url, db_username, db_password, delete):
     # TODO: how to notice user that the ontologies files need to be imported firstly.
     config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                "config", "cypher.yml")
@@ -114,21 +117,38 @@ def ontology(ontology_dir, db_url, db_username, db_password):
     importers = read_yaml(importer_config)
 
     entities = [e.lower() for e in importers["ontology_entities"]]
-    ontology_data_import_code = queries["IMPORT_ONTOLOGY_DATA"]['query']
-    formated_codes = []
-    for entity in entities:
-        formated_codes.extend(ontology_data_import_code.replace(
-            "ENTITY", entity.capitalize()).replace("IMPORTDIR", ontology_dir).split(";")[0:-1])
-    mappings = importers["ontology_mappings"]
-    mapping_import_code = queries["IMPORT_ONTOLOGY_MAPPING_DATA"]['query']
-    for m in mappings:
-        if m.lower() in entities:
-            for r in mappings[m]:
-                formated_codes.extend(mapping_import_code.replace("ENTITY1", m).replace(
-                    "ENTITY2", r).replace("IMPORTDIR", ontology_dir).split(";")[0:-1])
-    print("Dont loading ontologies.")
 
-    driver = connect_neo4j(db_url=db_url, user=db_username, password=db_password)
+    formated_codes = []
+    if delete:
+        mappings = importers["ontology_mappings"]
+        mapping_import_code = queries["REMOVE_ONTOLOGY_MAPPING_DATA"]['query']
+        for m in mappings:
+            if m.lower() in entities:
+                for r in mappings[m]:
+                    formated_codes.extend(mapping_import_code.replace("ENTITY1", m).replace(
+                        "ENTITY2", r).split(";")[0:-1])
+
+        ontology_data_import_code = queries["REMOVE_ONTOLOGY_DATA"]['query']
+        for entity in entities:
+            formated_codes.extend(ontology_data_import_code.replace(
+                "ENTITY", entity.capitalize()).split(";")[0:-1])
+        print("Done removing ontologies.")
+    else:
+        ontology_data_import_code = queries["IMPORT_ONTOLOGY_DATA"]['query']
+        for entity in entities:
+            formated_codes.extend(ontology_data_import_code.replace(
+                "ENTITY", entity.capitalize()).replace("IMPORTDIR", ontology_dir).split(";")[0:-1])
+        mappings = importers["ontology_mappings"]
+        mapping_import_code = queries["IMPORT_ONTOLOGY_MAPPING_DATA"]['query']
+        for m in mappings:
+            if m.lower() in entities:
+                for r in mappings[m]:
+                    formated_codes.extend(mapping_import_code.replace("ENTITY1", m).replace(
+                        "ENTITY2", r).replace("IMPORTDIR", ontology_dir).split(";")[0:-1])
+        print("Done loading ontologies.")
+
+    driver = connect_neo4j(
+        db_url=db_url, user=db_username, password=db_password)
     logger.info("Updating ontologies...")
     load_into_database(driver=driver, queries=formated_codes,
                        requester="ontologies")
@@ -151,11 +171,12 @@ DATABASE_ENTITY_MAP = {
 @click.option('--database-dir', '-d', required=True,
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the parsed database files.")
-@click.option('--which-entity', 'w', required=True, type=click.Choice(ENTITY_MAP.keys()), help="Which database you want to import.")
-@click.option('--db-url', '-d', required=True, help="Neo4j database url. Please contain database name, such as localhost:7687/default.")
-@click.option('--db-username', '-u', default="neo4j", help="Neo4j database username.")
+@click.option('--which-entity', '-w', required=True, type=click.Choice(ENTITY_MAP.keys()), help="Which database you want to import.")
+@click.option('--db-url', '-D', required=True, help="Neo4j database url. Please contain database name, such as localhost:7687/default.")
+@click.option('--db-username', '-U', default="neo4j", help="Neo4j database username.")
 @click.option('--db-password', '-P', default="NeO4J", help="Neo4j database password.")
-def database(database_dir, which_entity, db_url, db_username, db_password):
+@click.option('--delete', is_flag=True, default=False, help="Import or delete data.")
+def database(database_dir, which_entity, db_url, db_username, db_password, delete):
     # TODO: how to notice user that the ontologies files need to be imported firstly.
     config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                "config", "cypher.yml")
@@ -164,22 +185,32 @@ def database(database_dir, which_entity, db_url, db_username, db_password):
     importers = ENTITY_MAP.get(which_entity)
     formated_codes = []
     for importer in importers:
-        databases = DATABASE_ENTITY_MAP.get(importer)
-        import_code = queries[importer]['query']
-        # Maybe have several databases which provide the related files.
-        if databases:
-            for database in databases:
-                formated_codes.extend(import_code.replace("IMPORTDIR", database_dir).replace(
-                    "RESOURCE", database).split(";")[0:-1])
+        if not delete:
+            databases = DATABASE_ENTITY_MAP.get(importer)
+            import_code = queries[importer]['query']
+            # Maybe have several databases which provide the related files.
+            if databases:
+                for database in databases:
+                    formated_codes.extend(import_code.replace("IMPORTDIR", database_dir).replace(
+                        "RESOURCE", database).split(";")[0:-1])
+            else:
+                formated_codes.extend(import_code.replace(
+                    "IMPORTDIR", database_dir).split(";")[0:-1])
+            logger.info("Updating %s (%s)..." % (which_entity, importer))
         else:
-            formated_codes.extend(import_code.replace(
-                "IMPORTDIR", database_dir).split(";")[0:-1])
-
-    print("Dont loading %s's files." % which_entity)
+            remover = importer.replace("IMPORT", "REMOVE")
+            databases = DATABASE_ENTITY_MAP.get(remover)
+            import_code = queries[remover]['query']
+            # Maybe have several databases which provide the related files.
+            if databases:
+                for database in databases:
+                    formated_codes.extend(import_code.split(";")[0:-1])
+            else:
+                formated_codes.extend(import_code.split(";")[0:-1])
+            logger.info("Removing %s (%s)..." % (which_entity, remover))
 
     driver = connect_neo4j(
         db_url=db_url, user=db_username, password=db_password)
-    logger.info("Updating %s..." % which_entity)
     load_into_database(driver=driver, queries=formated_codes,
                        requester=which_entity)
 

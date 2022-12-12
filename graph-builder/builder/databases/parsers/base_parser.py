@@ -35,7 +35,8 @@ class BaseParser:
           3. How to split all fields to two parts for building graph and attribute database respectively?
     '''
 
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         config_dir = os.path.dirname(os.path.abspath(builder.__file__))
         self.builder_config = self.read_yaml(
             os.path.join(config_dir, "config.yml"))
@@ -43,6 +44,7 @@ class BaseParser:
         self.database_directory = database_directory
         self.download = download
         self.skip = skip
+        self.organisms = organisms
         if self.download:
             self.updated_on = str(datetime.date.today())
         else:
@@ -51,7 +53,8 @@ class BaseParser:
         self.database_name = self.database_name if self.database_name else None
 
         # Store the database files in a subdirectory.
-        self.import_directory = os.path.join(import_directory, self.database_name)
+        self.import_directory = os.path.join(
+            import_directory, self.database_name)
         self.check_directory(self.import_directory)
 
         # If the user pass a config file, use it instead of the default config file.

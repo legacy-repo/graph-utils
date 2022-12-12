@@ -12,13 +12,15 @@ logger = verboselogs.VerboseLogger('root')
 
 
 class CancerGenomeInterpreterParser(BaseParser):
-    def __init__(self, import_directory, database_directory, config_file=None, download=True, skip=True) -> None:
+    def __init__(self, import_directory, database_directory, config_file=None,
+                 download=True, skip=True, organisms=["9606", "10090"]) -> None:
         self.database_name = 'CancerGenomeInterpreter'
         config_dir = os_path.dirname(os_path.abspath(config.__file__))
         self.config_fpath = os_path.join(
             config_dir, "%s.yml" % self.database_name)
 
-        super().__init__(import_directory, database_directory, config_file, download, skip)
+        super().__init__(import_directory, database_directory,
+                         config_file, download, skip, organisms)
 
     def parse(self):
         variant_regex = r"(\D\d+\D)$"
