@@ -4,6 +4,7 @@ import sys
 import yaml
 import click
 import logging
+import neo4j
 import verboselogs
 import coloredlogs
 
@@ -29,18 +30,17 @@ def read_yaml(yaml_file):
 
 def connect_neo4j(db_url="localhost:7687", user="neo4j", password="password"):
     try:
-        uri = "bolt://".format(db_url)
-        driver = neo4j.GraphDatabase.driver(
-            uri, auth=(user, password), encrypted=False)
+        uri = "bolt://%s" % db_url
+        driver = neo4j.GraphDatabase.driver(uri, auth=(user, password),
+                                            encrypted=False)
+        return driver
     except Exception as err:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         sys_error = "{}, file: {},line: {}".format(
             sys.exc_info(), fname, exc_tb.tb_lineno)
         print("Database is not online")
-        #raise Exception("Unexpected error:{}.\n{}".format(err, sys_error))
-
-    return driver
+        raise Exception("Unexpected error:{}.\n{}".format(err, sys_error))
 
 
 def load_into_database(driver, queries, requester):
@@ -61,7 +61,7 @@ def load_into_database(driver, queries, requester):
                 if matches:
                     file_path = matches.group(1)
                     if os.path.isfile(unquote(file_path)):
-                        result = connector.commitQuery(driver, query+";")
+                        result, session = connector.commit_query(driver, query+";")
                         record = result.single()
                         if record is not None and 'c' in record:
                             counts = record['c']
@@ -78,12 +78,16 @@ def load_into_database(driver, queries, requester):
                         logger.error(
                             "Error loading: File does not exist. Query: {}".format(query))
             else:
-                result = connector.commitQuery(driver, query+";")
+                result, session = connector.commit_query(driver, query+";")
+            session.close()
         except Exception as err:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             logger.error(
                 "Loading: {}, file: {}, line: {} - query: {}".format(err, fname, exc_tb.tb_lineno, query))
+        finally:
+            if session and not session.closed():
+                session.close()
 
     return result
 
@@ -97,8 +101,8 @@ def importer():
 @click.option('--ontology-dir', '-d', required=True,
               type=click.Path(exists=True, dir_okay=True),
               help="The directory which saved the parsed ontology files.")
-@click.option('--db-url', '-d', required=True, help="Neo4j database url. Please contain database name, such as localhost:7687/default.")
-@click.option('--db-username', '-u', default="neo4j", help="Neo4j database username.")
+@click.option('--db-url', '-D', required=True, help="Neo4j database url. Please contain database name, such as localhost:7687/default.")
+@click.option('--db-username', '-U', default="neo4j", help="Neo4j database username.")
 @click.option('--db-password', '-P', default="NeO4J", help="Neo4j database password.")
 def ontology(ontology_dir, db_url, db_username, db_password):
     # TODO: how to notice user that the ontologies files need to be imported firstly.
@@ -124,8 +128,7 @@ def ontology(ontology_dir, db_url, db_username, db_password):
                     "ENTITY2", r).replace("IMPORTDIR", ontology_dir).split(";")[0:-1])
     print("Dont loading ontologies.")
 
-    driver = connect_neo4j(
-        db_url=db_url, user=db_username, password=db_password)
+    driver = connect_neo4j(db_url=db_url, user=db_username, password=db_password)
     logger.info("Updating ontologies...")
     load_into_database(driver=driver, queries=formated_codes,
                        requester="ontologies")
