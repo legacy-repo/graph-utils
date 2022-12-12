@@ -21,6 +21,7 @@ from builder.ontologies.parsers import icdParser
 from builder.ontologies.parsers import oboParser
 from builder.ontologies.parsers import reflectParser
 from builder.ontologies.parsers import efoParser
+from builder.ontologies.parsers import exoParser
 
 
 verboselogs.install()
@@ -262,6 +263,8 @@ class Ontology:
                 ontologyData = icdParser.parser(ontology_files)
             elif ontology == 'EFO':
                 ontologyData, mappings = efoParser.parser(ontology_files)
+            elif ontology == 'ExO':
+                ontologyData, mappings = exoParser.parser(ontology_files)
             else:
                 ontologyData = oboParser.parser(ontology, ontology_files)
                 self.build_mapping_from_obo(

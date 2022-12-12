@@ -47,11 +47,16 @@ ontology:
     "Gene_ontology": "GO"
     "Experimental_factor": "EFO"
     "Units": "UO"
+    "Exposure": "ExO"
     #'Biomedical_investigations': 'OBI'
     #'Diagnosis': 'ICD-10'
 
   entities:
     "DO": "Disease"
+    "exposure_event": "Exposure_event"
+    "exposure_outcome": "Exposure_outcome"
+    "exposure_receptor": "Exposure_receptor"
+    "exposure_stressor": "Exposure_stressor"
     "BTO": "Tissue"
     "SNOMED-CT": "Clinical_variable"
     "HPO": "Phenotype"
@@ -80,6 +85,7 @@ ontology:
     "UO": "-46"
     #'OBI':  '-47'
     #'ICD-10': '-48'
+    "ExO": "-49"
 
   parser_filters:
     "-40":
@@ -115,6 +121,8 @@ ontology:
     #    - https://raw.githubusercontent.com/obi-ontology/obi/v2020-04-23/views/obi.obo
     #'-48':
     #    - 'ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/2020/icd10cm_codes_2020.txt'
+    "-49":
+      - "http://ctdbase.org/reports/CTD_exposure_ontology.obo"
 
   files:
     "-40":
